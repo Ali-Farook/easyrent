@@ -14,11 +14,10 @@ const signUpController = async (req, res) => {
       const tokenPaylod = {
          userId: user._id
       };
-      const token = jwt.sign(tokenPaylod, process.env.TOKEN_SECRET_KEY, { expiresIn: '12h' });
+      const token = jwt.sign(tokenPaylod, process.env.TOKEN_SECRET_KEY, { expiresIn: '6h' });
       return res.status(200).send({ data: user, message: strings.USER_CREATED, token });
    } catch (error) {
-      console.error('Error occurred:', error);
-      return res.status(500).send({ message: strings.SERVER_ERROR })
+      return res.status(500).send({ message: strings.SERVER_ERROR });
    }
 }
 
@@ -39,8 +38,7 @@ const loginController = async (req, res) => {
          return res.status(404).send({ message: strings.NOT_FOUND });
       }
    } catch (error) {
-      console.error('Error occurred:', error);
-      return res.status(500).send({ message: strings.SERVER_ERROR })
+      return res.status(500).send({ message: strings.SERVER_ERROR });
    }
 }
 

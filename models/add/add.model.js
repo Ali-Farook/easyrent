@@ -27,13 +27,17 @@ const addSchema = new Schema({
         type: String,
         required: true
     },
+    phoneNumber: {
+        type: String,
+        required: true
+    },
     category: {
         type: String,
-        enum: ['sale', 'rent'],
+        required: true
     },
     subCategory: {
         type: String,
-        enum: ['commercial', 'house', 'office'],
+        required: true
     },
     createdAt: {
         type: Date,
