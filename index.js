@@ -9,7 +9,9 @@ const cors = require('cors');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
+app.get('/', (req, res) => {
+    return res.send('<h1>Ali Farooq</h1>');
+})
 // CONNECT TO DATABASE
 connectToMongoAtlas();
 
