@@ -24,7 +24,6 @@ const signUpController = async (req, res) => {
 const loginController = async (req, res) => {
    try {
       const { email, password } = req.body;
-      console.log('emaiil', email)
       const user = await User.findOne({ email: email });
       if (user) {
          if (user.password != password) {
