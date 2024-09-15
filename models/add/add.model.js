@@ -6,6 +6,12 @@ const addSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    agencyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Agency',
+        required: false,
+        default: ''
+    },
     title: {
         type: String,
         required: true

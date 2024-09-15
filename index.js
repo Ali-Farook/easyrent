@@ -10,18 +10,19 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cluster = require('cluster');
 const os = require('os');
+const path = require('path');
 
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 120 // limit each IP to 120 requests per windowMs
+    max: 70 // limit each IP to 120 requests per windowMs
 });
 
+// app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(limiter);
-
 
 if (cluster.isMaster) {
     const numCPUs = os.cpus().length;
@@ -36,9 +37,9 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 } else {
-    connectToMongoAtlas();
+    connectToMongoAtlas(process.pid);
 
-    app.get('/', (req, res) => res.send(`<h1>Ali Farooq</h1>`));
+    app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', 'welcome.html')));
 
     app.use('/api/auth', authRoutes)
     app.use('/api/adds', addRoutes);
