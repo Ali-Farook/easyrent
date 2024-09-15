@@ -3,6 +3,7 @@ const express = require('express');
 const { connectToMongoAtlas } = require('./db');
 const authRoutes = require("./routes/auth/auth");
 const addRoutes = require("./routes/adds/adds");
+const agencyRoutes = require("./routes/agency/agency");
 const app = express();
 const port = process.env.PORT;
 const cors = require('cors');
@@ -33,7 +34,7 @@ if (cluster.isMaster) {
     }
 
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`Worker ${worker.process.pid} died`);
+        // console.log(`Worker ${worker.process.pid} died`);
         cluster.fork();
     });
 } else {
@@ -42,7 +43,8 @@ if (cluster.isMaster) {
     app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', 'welcome.html')));
 
     app.use('/api/auth', authRoutes)
-    app.use('/api/adds', addRoutes);
+    app.use('/api/adds', addRoutes)
+    app.use('/api/agencies', agencyRoutes)
 
     app.listen(port, () => {
         console.log(`Worker ${process.pid} started`);

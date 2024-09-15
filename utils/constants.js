@@ -11,6 +11,8 @@ const strings = {
     DOCUMENT_DELETED: "Document deleted.",
     NO_DOCUMENT_FOUND: "No document found with that ID.",
     DOCUMENT_UPDATED_SUCCESSFULLY: "Document updated successfully.",
+    AGENCY_CREATED_SUCCESSFULLY: "Agency created successfully.",
+    YOU_ALREADY_HAS_AGENCY: "You already has agency with this email address",
 }
 
 module.exports = { strings };

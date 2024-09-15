@@ -1,3 +1,4 @@
+const Agency = require('../../models/agency/agency.modal');
 const User = require('../../models/user/user.model');
 const { strings } = require('../../utils/constants');
 const jwt = require('jsonwebtoken');
@@ -33,7 +34,11 @@ const loginController = async (req, res) => {
             userId: user._id
          };
          const token = jwt.sign(tokenPaylod, process.env.TOKEN_SECRET_KEY, { expiresIn: '12h' });
-         return res.status(200).send({ data: user, message: strings.LOGIN_SUCCESS, token });
+         const agency = await Agency.find({ userId: user._id });
+         if (!agency) {
+            agency = {}
+         }
+         return res.status(200).send({ data: { user, agencies: agency }, message: strings.LOGIN_SUCCESS, token });
       } else {
          return res.status(404).send({ message: strings.NOT_FOUND });
       }
