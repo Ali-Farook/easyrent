@@ -4,14 +4,15 @@ const { Schema } = mongoose;
 const addSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
-    agencyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Agency',
-        required: false,
-        default: ''
-    },
+    // agencyId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Agency',
+    //     required: false,
+    //     default: ''
+    // },
     title: {
         type: String,
         required: true
@@ -24,30 +25,36 @@ const addSchema = new Schema({
         type: String,
         required: true
     },
+    heroImage: {
+        type: String,
+        default: '',
+        required: true
+    },
     images: {
         type: [String],
         default: [],
         required: false
     },
     size: {
-        type: String,
+        type: Number,
         required: true
     },
     phoneNumber: {
         type: String,
         required: true
     },
-    category: {
+    saleType: {
         type: String,
         required: true
     },
-    subCategory: {
+    propertyType: {
         type: String,
         required: true
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: false
     }
 });
 

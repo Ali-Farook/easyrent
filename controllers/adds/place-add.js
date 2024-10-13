@@ -1,16 +1,22 @@
 const { strings } = require("../../utils/constants");
 const Add = require('../../models/add/add.model');
+const { uploadToS3 } = require("../../utils/helpers");
 
 const getAllAdds = async (req, res) => {
   try {
+    const address = req.query.location;
     const page = req.query.page;
     const limit = 50;
     const skip = (page - 1) * limit;
-    const adds = await Add.find().skip(skip).limit(limit).populate('userId').lean();
-    if (adds.length == 0) {
-      return res.status(400).send({ date: adds, message: strings.NOT_FOUND, success: false });
+    let search = {}
+    if (address) {
+      search = { address: { $regex: address, $options: 'i' } }
     }
-    return res.status(200).send({ date: adds, message: strings.FOUND_SUCCESSFULLY, success: true });
+    const adds = await Add.find(search).skip(skip).limit(limit).populate('userId').lean();
+    if (adds.length == 0) {
+      return res.status(400).send({ data: adds, message: strings.NOT_FOUND, success: false });
+    }
+    return res.status(200).send({ data: adds, message: strings.FOUND_SUCCESSFULLY, success: true });
   } catch (error) {
     return res.status(500).send({ message: strings.SERVER_ERROR });
   }
@@ -18,23 +24,40 @@ const getAllAdds = async (req, res) => {
 
 const publishAdd = async (req, res) => {
   try {
-    const { user, title, price, address, images, size, category, subCategory, phoneNumber } = req.body;
-    const add = await Add.create({
+    const { user, title, price, address, heroImage, size, saleType, propertyType, phoneNumber } = req.body;
+    console.log(req.body.user.userId)
+    const newAdd = new Add({
       userId: user.userId,
-      title,
-      price,
-      address,
-      images,
-      size,
-      category,
-      subCategory,
-      phoneNumber
+      title: title,
+      price: Number(price),
+      address: address,
+      heroImage: heroImage,
+      size: Number(size),
+      propertyType: propertyType,
+      saleType: saleType,
+      phoneNumber: phoneNumber
     });
-    return res.status(200).send({ data: add, sucess: true, message: strings.ADD_CREATED_SUCCESSFULLY });
+    newAdd.save();
+    return res.status(200).send({ data: newAdd, success: true, message: strings.ADD_CREATED_SUCCESSFULLY });
   } catch (error) {
-    return res.status(500).send({ message: strings.SERVER_ERROR });
+    return res.status(500).send({ success: false, message: strings.SERVER_ERROR });
   }
 };
+
+const uploadHeroImage = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).send({ success: false, message: 'No file uploaded' });
+    }
+    const imageUrl = await uploadToS3(file);
+    // console.log('uploadToS3_url==', imageUrl);
+    return res.status(200).send({ image: imageUrl });
+  } catch (error) {
+    // console.log('error==', error)
+    return res.status(500).send({ success: false, message: strings.SERVER_ERROR });
+  }
+}
 
 const getAdd = async (req, res) => {
   try {
@@ -98,4 +121,4 @@ const searchAdd = async (req, res) => {
   }
 };
 
-module.exports = { getAllAdds, publishAdd, editAdd, deleteAdd, getAdd, searchAdd }
+module.exports = { getAllAdds, publishAdd, editAdd, deleteAdd, getAdd, searchAdd, uploadHeroImage }

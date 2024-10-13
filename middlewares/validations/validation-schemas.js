@@ -12,4 +12,15 @@ const agencySchema = z.object({
     location: z.string({ required_error: "Location is required" }),
 });
 
-module.exports = { agencySchema, userSchema };
+const addSchema = z.object({
+    title: z.string({ required_error: "Title is required" }).min(6),
+    price: z.number({ required_error: "Price is required" }),
+    address: z.string({ required_error: "Address is required" }),
+    heroImage: z.string({ required_error: "Image is required" }),
+    size: z.number({ required_error: "Size is required" }),
+    propertyType: z.string({ required_error: "Property type is required" }),
+    saleType: z.string({ required_error: "Rent or Buy is required" }),
+    phoneNumber: z.string({ required_error: "phone Number is required" })
+})
+
+module.exports = { agencySchema, userSchema, addSchema };
